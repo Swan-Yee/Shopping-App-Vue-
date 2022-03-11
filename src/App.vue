@@ -28,8 +28,10 @@
         <span class="mr-2">Home</span>
       </v-btn>
       <v-btn text :to="{ name: 'cart' }">
-        <v-icon>mdi-cart</v-icon>
-        <span class="mr-2">Cart</span>
+        <v-badge :content="carts.length" :value="carts.length" color="green">
+          <v-icon>mdi-cart</v-icon>
+          <span class="mr-2">Cart</span>
+        </v-badge>
       </v-btn>
     </v-app-bar>
 
@@ -42,3 +44,15 @@
 </template>
 
 <style></style>
+
+<script>
+export default {
+  name: "App",
+  data: () => ({
+    carts: [],
+  }),
+  mounted() {
+    this.carts = this.$root.carts;
+  },
+};
+</script>

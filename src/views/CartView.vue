@@ -16,63 +16,32 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Name 1</td>
+            <tr v-for="(cart, index) in carts" :key="cart.id">
+              <td>{{ cart.id }}</td>
+              <td>{{ cart.title }}</td>
               <td>
-                <v-img
-                  src="https://cdn.pixabay.com/photo/2013/07/12/18/20/shoes-153310_960_720.png"
-                  max-width="100"
-                  max-height="100"
-                ></v-img>
+                <img :src="cart.image" width="100" height="100" />
               </td>
-              <td>$99</td>
-              <td>
-                <v-btn class="purple mr-2" dark>
+              <td>${{ cart.price }}</td>
+              <td class="text-no-wrap">
+                <v-btn class="purple mr-2" dark @click="increaseQty(cart)">
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
-                <v-btn class="red" dark>
+                <v-btn class="red" dark @click="decreaseQty(cart)">
                   <v-icon>mdi-minus</v-icon>
                 </v-btn>
               </td>
-              <td>1</td>
-              <td>$99</td>
+              <td>{{ cart.qty }}</td>
+              <td>${{ finalPrice(cart.qty, cart.price).toFixed(2) }}</td>
               <td>
-                <v-btn class="pink" dark>
-                  <v-icon>mdi-minus</v-icon>
-                </v-btn>
-              </td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>Name 1</td>
-              <td>
-                <v-img
-                  src="https://cdn.pixabay.com/photo/2013/07/12/18/20/shoes-153310_960_720.png"
-                  max-width="100"
-                  max-height="100"
-                ></v-img>
-              </td>
-              <td>$99</td>
-              <td>
-                <v-btn class="purple mr-2" dark>
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-                <v-btn class="red" dark>
-                  <v-icon>mdi-minus</v-icon>
-                </v-btn>
-              </td>
-              <td>1</td>
-              <td>$99</td>
-              <td>
-                <v-btn class="pink" dark>
+                <v-btn class="pink" dark @click="deleteCart(index)">
                   <v-icon>mdi-minus</v-icon>
                 </v-btn>
               </td>
             </tr>
             <tr>
               <td colspan="6">Total Price :</td>
-              <td colspan="2">$198</td>
+              <td colspan="2">${{ totalPrice.toFixed(2) }}</td>
             </tr>
           </tbody>
         </template>
@@ -84,6 +53,36 @@
 <script>
 export default {
   name: "CartView",
+  data() {
+    return {
+      carts: [],
+    };
+  },
+  methods: {
+    finalPrice(qty, price) {
+      return qty * price;
+    },
+    increaseQty(cart) {
+      cart.qty++;
+    },
+    decreaseQty(cart) {
+      if (cart.qty != 1) cart.qty--;
+    },
+    deleteCart(index) {
+      this.carts.splice(index, 1);
+    },
+  },
+  computed: {
+    totalPrice() {
+      return this.carts.reduce(
+        (total, cart) => (total += cart.price * cart.qty),
+        0
+      );
+    },
+  },
+  mounted() {
+    this.carts = this.$root.carts;
+  },
 };
 </script>
 
