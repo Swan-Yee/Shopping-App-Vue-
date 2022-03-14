@@ -26,6 +26,15 @@
         ></v-progress-circular>
       </div>
     </v-col>
+    <div>
+      <div class="text-center" v-if="!loading">
+        <v-pagination
+          v-model="page"
+          :length="paginationLength"
+          circle
+        ></v-pagination>
+      </div>
+    </div>
   </v-row>
 </template>
 
@@ -34,14 +43,27 @@ export default {
   name: "HomeView",
   data() {
     return {
-      products: [],
-      loading: false,
+      page: 1,
     };
   },
+  computed: {
+    products() {
+      let start = 0;
+      let perPage = 6;
+      if (this.page > 1) {
+        start = (this.page - 1) * perPage;
+      }
+      return this.$store.state.products.slice(start, perPage * this.page);
+    },
+    loading() {
+      return this.$store.state.loading;
+    },
+    paginationLength() {
+      return Math.ceil(this.$store.state.products.length / 6);
+    },
+  },
   created() {
-    fetch("https://fakestoreapi.com/products")
-      .then((res) => res.json())
-      .then((json) => ((this.products = json), (this.loading = false)));
+    this.$store.dispatch("fetchProducts");
   },
   methods: {
     moreDetail(product) {

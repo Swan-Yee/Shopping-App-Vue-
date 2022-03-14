@@ -34,27 +34,23 @@
 export default {
   name: "DetailView",
   data() {
-    return {
-      product: [],
-      loading: true,
-    };
+    return {};
   },
   props: ["id"],
+  computed: {
+    product() {
+      return this.$store.state.product;
+    },
+    loading() {
+      return this.$store.state.loading;
+    },
+  },
   created() {
-    fetch(`https://fakestoreapi.com/products/${this.id}`)
-      .then((res) => res.json())
-      .then((json) => ((this.product = json), (this.loading = false)));
+    this.$store.dispatch("fetchProductDetail", this.id);
   },
   methods: {
     addCart() {
-      let carts = this.$root.carts;
-      let isInCart = carts.find((cart) => cart.id === this.product.id);
-      if (isInCart) {
-        isInCart.qty++;
-      } else {
-        let newProduct = { qty: 1, ...this.product };
-        carts.push(newProduct);
-      }
+      this.$store.dispatch("addToCart");
     },
   },
 };

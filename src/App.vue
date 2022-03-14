@@ -48,11 +48,10 @@
 <script>
 export default {
   name: "App",
-  data: () => ({
-    carts: [],
-  }),
-  mounted() {
-    this.carts = this.$root.carts;
+  computed: {
+    carts() {
+      return this.$store.state.carts;
+    },
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col cols="12">
+    <v-col cols="12" v-if="carts.length">
       <v-simple-table>
         <template v-slot:default>
           <thead>
@@ -39,13 +39,26 @@
                 </v-btn>
               </td>
             </tr>
-            <tr>
+            <tr v-show="carts.length">
               <td colspan="6">Total Price :</td>
               <td colspan="2">${{ totalPrice.toFixed(2) }}</td>
             </tr>
           </tbody>
         </template>
       </v-simple-table>
+    </v-col>
+    <v-col class="col-12" v-else>
+      <v-banner two-line>
+        <v-avatar slot="icon" color="deep-purple accent-4" size="40">
+          <v-icon icon="mdi-cart" color="white"> mdi-cart </v-icon>
+        </v-avatar>
+
+        There has no Items
+
+        <template v-slot:actions>
+          <v-btn text color="deep-purple accent-4" to="/"> See Items </v-btn>
+        </template>
+      </v-banner>
     </v-col>
   </v-row>
 </template>
@@ -63,13 +76,13 @@ export default {
       return qty * price;
     },
     increaseQty(cart) {
-      cart.qty++;
+      this.$store.dispatch("increaseQty", cart);
     },
     decreaseQty(cart) {
-      if (cart.qty != 1) cart.qty--;
+      this.$store.dispatch("decreaseQty", cart);
     },
     deleteCart(index) {
-      this.carts.splice(index, 1);
+      this.$store.commit("deleteCart", index);
     },
   },
   computed: {
@@ -81,7 +94,7 @@ export default {
     },
   },
   mounted() {
-    this.carts = this.$root.carts;
+    this.carts = this.$store.state.carts;
   },
 };
 </script>
